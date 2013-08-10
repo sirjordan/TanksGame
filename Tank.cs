@@ -103,7 +103,10 @@ namespace Tanks
                 else if (this.topPos < Battlefield.FieldHeight - 4)
                 {
                     Delete(leftPos, topPos);
+                    if (FreeCells(d))
+                    {
                     topPos++;
+                    }
                 }
                 PlaceTank(leftPos, topPos);
             }
@@ -116,7 +119,10 @@ namespace Tanks
                 else if (this.leftPos > 1)
                 {
                     Delete(leftPos, topPos);
-                    leftPos--;
+                    if (FreeCells(d))
+                    {
+                        leftPos--;
+                    }
                 }
                 PlaceTank(leftPos, topPos);
             }
@@ -129,7 +135,10 @@ namespace Tanks
                 else if (this.topPos > 1)
                 {
                     Delete(leftPos, topPos);
-                    topPos--;
+                    if (FreeCells(d))
+                    {
+                        topPos--;
+                    }
                 }
                 PlaceTank(leftPos, topPos);
             }
@@ -185,16 +194,23 @@ namespace Tanks
             int col = leftPos;
             if (d.Equals(direction.right))
             {
-                // TODO: rows and cols are wrong, maybe the battlefield array...
                 result = Battlefield.content[row + 1, col + 4] == ' ' && Battlefield.content[row , col + 4] == ' ' &&
                     Battlefield.content[row + 2, col + 4] == ' ';
-
-               //Console.SetCursorPosition(col + 4, row + 2);
-               //Console.Write('$');
-               //Console.SetCursorPosition(col + 4, row + 1);
-               //Console.Write('$');
-               //Console.SetCursorPosition(col + 4, row );
-               //Console.Write('$');
+            }
+            else if (d.Equals(direction.left))
+            {
+                result = Battlefield.content[row + 1, col - 2] == ' ' && Battlefield.content[row, col - 2] == ' ' &&
+                    Battlefield.content[row + 2, col - 2] == ' ';
+            }
+            else if (d.Equals(direction.up))
+            {
+                result = Battlefield.content[row - 1, col] == ' ' && Battlefield.content[row - 1, col + 1] == ' ' &&
+                    Battlefield.content[row - 1, col + 2] == ' ';
+            }
+            else    // direction down
+            {
+                result = Battlefield.content[row + 3, col] == ' ' && Battlefield.content[row + 3, col + 1] == ' ' &&
+                    Battlefield.content[row + 3, col + 2] == ' ';
             }
             return result;
         }
