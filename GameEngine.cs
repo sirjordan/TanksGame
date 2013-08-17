@@ -11,16 +11,28 @@ namespace Tanks
         static int gameSpeed = 60;
         static bool runGame = true;
         List<Tank> enemyTanks = new List<Tank>();
+        static Tank playerTank = new Tank(Battlefield.FieldHeight - 13, Battlefield.FieldWidth / 2);
+
+        static EnemyTank enemyTank1 = new EnemyTank(1, 1);
+        static EnemyTank enemyTank2 = new EnemyTank(1, Battlefield.FieldWidth - 5);
 
         static void Main()
         {
             // set the encoding to print the extendet ASCII table
             Console.OutputEncoding = System.Text.Encoding.GetEncoding(1252);
-
             Battlefield.SetBattlefield();
-            Tank playerTank = new Tank(Battlefield.FieldHeight - 3, Battlefield.FieldWidth / 2);
-            
 
+            Thread enemyTanksTh = new Thread(new ThreadStart(RunEnemyTank));
+            Thread playerTankTh = new Thread(new ThreadStart(Run));
+            enemyTanksTh.Start();
+            playerTankTh.Start();
+            enemyTanksTh.Join();
+            playerTankTh.Join();
+        }
+
+        // gameRun
+        static void Run()
+        {
             while (runGame)
             {
                 // move the tank
@@ -45,11 +57,21 @@ namespace Tanks
                     }
                     if (keyInfo.Key == ConsoleKey.Spacebar) // and if there is no missle already
                     {
-                        // shoot a missle
+                        Missile newMissile = new Missile(playerTank);
                     }
                 }
             }
-            // game over things
+        }
+
+        // enemy Tanks infiniteLoops , this is just for testing
+        // this method need to be upgraded :D
+        static void RunEnemyTank()
+        {
+            while (runGame)
+            {
+                enemyTank1.Move();
+                //enemyTank2.Move();
+            }
         }
     }
 }
