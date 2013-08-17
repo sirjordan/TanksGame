@@ -9,9 +9,9 @@ namespace Tanks
     {
         int life = 3;
         public enum direction { up, down, left, right };
-        public int leftPos;   // center of the tank
-        public int topPos;    // center of the tank
-        private char[,] body = new char[3, 3]  // regular tank dimentions, and geometry
+        public int leftPos; // center of the tank
+        public int topPos; // center of the tank
+        private char[,] body = new char[3, 3] // regular tank dimentions, and geometry
         {
             {' ','*',' '},
             {'*','*','*'},
@@ -20,19 +20,19 @@ namespace Tanks
         // I KNOW it is stupid but for now it is the simplest !
         // the idea is just to rotate the array, but it cause difficulties
         // for now it is this
-        private char[,] bodyUp = new char[3, 3]  
+        private char[,] bodyUp = new char[3, 3]
         {
             {' ','*',' '},
             {'*','*','*'},
             {'*','*','*'}
         };
-        private char[,] bodyDown = new char[3, 3] 
+        private char[,] bodyDown = new char[3, 3]
         {
             {'*','*','*'},
             {'*','*','*'},
             {' ','*',' '}
         };
-        private char[,] bodyRight = new char[3, 3]  
+        private char[,] bodyRight = new char[3, 3]
         {
             {'*','*',' '},
             {'*','*','*'},
@@ -58,13 +58,13 @@ namespace Tanks
         public void PlaceTank(int lt, int tp) // left/top
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.SetCursorPosition(lt - 1, tp - 1);   // topleft for the tank
+            Console.SetCursorPosition(lt - 1, tp - 1); // topleft for the tank
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
                     // write to the battle array
-                    Battlefield.Add(tp + i, lt + j, body[i, j]);    // i know it is Ununderstandable, hope this works
+                    Battlefield.Add(tp + i, lt + j, body[i, j]); // i know it is Ununderstandable, hope this works
 
                     // draw to the console
                     Console.SetCursorPosition(lt + j, tp + i);
@@ -80,19 +80,19 @@ namespace Tanks
         {
             if (d == direction.right)
             {
-                if (!body.Equals(bodyRight))    // if direction is not Right
+                if (!body.Equals(bodyRight)) // if direction is not Right
                 {
                     body = bodyRight;
                 }
-                else if (this.leftPos < Battlefield.FieldWidth - 3)
+                else if (this.leftPos < Battlefield.FieldWidth - 4)
                 {
-                    Delete(leftPos, topPos);     // delete the last position of the tank
+                    Delete(leftPos, topPos); // delete the last position of the tank
                     if (FreeCells(d))
                     {
                         leftPos++; // the topLeft left
                     }
                 }
-                PlaceTank(leftPos, topPos);   // draw the tank
+                PlaceTank(leftPos, topPos); // draw the tank
             }
             else if (d == direction.down)
             {
@@ -105,7 +105,7 @@ namespace Tanks
                     Delete(leftPos, topPos);
                     if (FreeCells(d))
                     {
-                    topPos++;
+                        topPos++;
                     }
                 }
                 PlaceTank(leftPos, topPos);
@@ -126,7 +126,7 @@ namespace Tanks
                 }
                 PlaceTank(leftPos, topPos);
             }
-            else  // if direction is UP
+            else // if direction is UP
             {
                 if (!body.Equals(bodyUp))
                 {
@@ -145,11 +145,11 @@ namespace Tanks
         }
 
         // rotating 90 degree clockword
-        public char[,] Rotate(char[,] input, int iterations)    // iterations -> how mani time to rotate
+        public char[,] Rotate(char[,] input, int iterations) // iterations -> how mani time to rotate
         {
             int rows = input.GetLength(0);
             int cols = input.GetLength(1);
-            char[,] rotated = new char[cols, rows];  // yes it is reversed height and width for NonScquare arrays
+            char[,] rotated = new char[cols, rows]; // yes it is reversed height and width for NonScquare arrays
 
             for (int i = 0; i < cols; i++)
             {
@@ -171,13 +171,13 @@ namespace Tanks
         // delete tank from the fields
         public void Delete(int lt, int tp)
         {
-            Console.SetCursorPosition(lt - 1, tp - 1);   // topleft for the tank
+            Console.SetCursorPosition(lt - 1, tp - 1); // topleft for the tank
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
                     // write to the battle array
-                    Battlefield.Add(tp + i, lt + j, ' ');    // i know it is Ununderstandable, hope this works
+                    Battlefield.Add(tp + i, lt + j, ' '); // i know it is Ununderstandable, hope this works
 
                     // draw to the console
                     Console.SetCursorPosition(lt + j, tp + i);
@@ -194,7 +194,7 @@ namespace Tanks
             int col = leftPos;
             if (d.Equals(direction.right))
             {
-                result = Battlefield.content[row + 1, col + 4] == ' ' && Battlefield.content[row , col + 4] == ' ' &&
+                result = Battlefield.content[row + 1, col + 4] == ' ' && Battlefield.content[row, col + 4] == ' ' &&
                     Battlefield.content[row + 2, col + 4] == ' ';
             }
             else if (d.Equals(direction.left))
@@ -207,12 +207,38 @@ namespace Tanks
                 result = Battlefield.content[row - 1, col] == ' ' && Battlefield.content[row - 1, col + 1] == ' ' &&
                     Battlefield.content[row - 1, col + 2] == ' ';
             }
-            else    // direction down
+            else // direction down
             {
                 result = Battlefield.content[row + 3, col] == ' ' && Battlefield.content[row + 3, col + 1] == ' ' &&
                     Battlefield.content[row + 3, col + 2] == ' ';
             }
             return result;
+        }
+
+        // <Properties>
+        // TODO: Properties for all the Fields
+        // returns the tanks current direction
+        public direction Direction
+        {
+            get
+            {
+                if (this.body.Equals(bodyDown))
+                {
+                    return direction.down;
+                }
+                else if (this.body.Equals(bodyLeft))
+                {
+                    return direction.left;
+                }
+                else if (this.body.Equals(bodyRight))
+                {
+                    return direction.right;
+                }
+                else
+                {
+                    return direction.up;
+                }
+            }
         }
     }
 }
