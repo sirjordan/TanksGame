@@ -1,0 +1,98 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+
+namespace Tanks
+{
+    public class Missile
+    {
+        // Fields
+        int speed;
+        Tank.direction missleDirection;
+        bool launched;
+        Tank currentTank;
+        int missileTop;
+        int missileLeft;
+
+        // Constructor
+        public Missile(Tank tank)
+        {
+            this.currentTank = tank;
+            this.missleDirection = tank.Direction;
+            this.missileLeft = currentTank.leftPos;
+            this.missileTop = currentTank.topPos;
+            Launch();
+        }
+
+        // Methods 
+        void Launch()
+        {
+            if (missleDirection.Equals(Tank.direction.down))
+            {
+                missileLeft += 1;
+                missileTop += 3;
+                while (missileTop < Battlefield.FieldHeight - 1)
+                {
+                    DrawMissile();
+                }
+            }
+            else if (missleDirection.Equals(Tank.direction.left))
+            {
+                missileLeft -= 2;
+                missileTop += 1;
+                while (missileLeft > 1)
+                {
+                    DrawMissile();
+                }
+            }
+            else if (missleDirection.Equals(Tank.direction.right))
+            {
+                missileLeft += 3;
+                missileTop += 1;
+                while (missileLeft < Battlefield.FieldWidth - 1)    // or something else
+                {
+                    DrawMissile();
+                }
+            }
+            else    // direction UP
+            {
+                missileLeft += 1;
+                missileTop -= 3;
+                while (missileTop > 0)
+                {
+                    DrawMissile();
+                }
+            }
+        }
+
+        // draw the missle
+        void DrawMissile()
+        {
+            Thread.Sleep(35);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.SetCursorPosition(missileLeft, missileTop);
+            Console.Write(' ');
+
+            if (missleDirection.Equals(Tank.direction.right))
+            {
+                missileLeft++;
+            }
+            else if (missleDirection.Equals(Tank.direction.left))
+            {
+                missileLeft--;
+            }
+            else if (missleDirection.Equals(Tank.direction.down))
+            {
+                missileTop++;
+            }
+            else  // direction UP
+            {
+                missileTop--;
+            }
+            Console.SetCursorPosition(missileLeft, missileTop);
+            Console.Write('*');
+        }
+    }
+}
