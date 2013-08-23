@@ -8,18 +8,24 @@ namespace Tanks
 {
     public class GameEngine
     {
-        static int gameSpeed = 60;
+        static int difficult = 5;   // more is harder
+        static int gameSpeed = 60;  // small is fast
         static bool runGame = true;
-        List<Tank> enemyTanks = new List<Tank>();
+        static List<EnemyTank> enemyTanks = new List<EnemyTank>();
         static Tank playerTank = new Tank(Battlefield.FieldHeight - 13, Battlefield.FieldWidth / 2);
 
-        static EnemyTank enemyTank1 = new EnemyTank(1, 1);
-        static EnemyTank enemyTank2 = new EnemyTank(1, Battlefield.FieldWidth - 5);
+        // test enemyTank
+        //static EnemyTank enemyTank1 = new EnemyTank(1, Battlefield.FieldWidth - 5);
 
         static void Main()
         {
             // set the encoding to print the extendet ASCII table
-            Console.OutputEncoding = System.Text.Encoding.GetEncoding(1252);
+            //Console.OutputEncoding = System.Text.Encoding.GetEncoding(1252);
+            
+            // create a number of enemies based on the difficult
+            enemyTanks = EnemyTank.GenerateEnemyTanks(difficult);
+
+            // create a battlefield playing grid
             Battlefield.SetBattlefield();
 
             Thread enemyTanksTh = new Thread(new ThreadStart(RunEnemyTank));
@@ -57,7 +63,12 @@ namespace Tanks
                     }
                     if (keyInfo.Key == ConsoleKey.Spacebar) // and if there is no missle already
                     {
+                        // TODO: Thread does't work properly, maybe it is couse it is nestet thread..??
                         Missile newMissile = new Missile(playerTank);
+
+                        Thread missileThread = new Thread(new ThreadStart(newMissile.Launch));
+                        missileThread.Start();
+                        missileThread.Join();
                     }
                 }
             }
@@ -69,8 +80,18 @@ namespace Tanks
         {
             while (runGame)
             {
-                enemyTank1.Move();
-                //enemyTank2.Move();
+                Console.ForegroundColor = ConsoleColor.Red;
+                List<Thread> threadList = new List<Thread>();
+                for (int i = 0; i < enemyTanks.Count; i++)
+                {
+                    threadList.Add(new Thread(new ThreadStart(enemyTanks[i].Move)));
+                    threadList[i].Start();
+                }
+
+                foreach (var thread in threadList)
+                {
+                    thread.Join();
+                }
             }
         }
     }
