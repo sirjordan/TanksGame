@@ -7,11 +7,11 @@ namespace Tanks
 {
     public class Tank
     {
-        int life = 3;
+        protected int life = 3;
         public enum direction { up, down, left, right };
         public int leftPos; // center of the tank
         public int topPos; // center of the tank
-        private char[,] body = new char[3, 3] // regular tank dimentions, and geometry
+        protected char[,] body = new char[3, 3] // regular tank dimentions, and geometry
         {
             {' ','*',' '},
             {'*','*','*'},
@@ -20,25 +20,25 @@ namespace Tanks
         // I KNOW it is stupid but for now it is the simplest !
         // the idea is just to rotate the array, but it cause difficulties
         // for now it is this
-        private char[,] bodyUp = new char[3, 3]
+        protected char[,] bodyUp = new char[3, 3]
         {
             {' ','*',' '},
             {'*','*','*'},
             {'*','*','*'}
         };
-        private char[,] bodyDown = new char[3, 3]
+        protected char[,] bodyDown = new char[3, 3]
         {
             {'*','*','*'},
             {'*','*','*'},
             {' ','*',' '}
         };
-        private char[,] bodyRight = new char[3, 3]
+        protected char[,] bodyRight = new char[3, 3]
         {
             {'*','*',' '},
             {'*','*','*'},
             {'*','*',' '}
         };
-        private char[,] bodyLeft = new char[3, 3]
+        protected char[,] bodyLeft = new char[3, 3]
         {
             {' ','*','*'},
             {'*','*','*'},
@@ -169,7 +169,7 @@ namespace Tanks
         }
 
         // delete tank from the fields
-        public void Delete(int lt, int tp)
+        protected void Delete(int lt, int tp)
         {
             Console.SetCursorPosition(lt - 1, tp - 1); // topleft for the tank
             for (int i = 0; i < 3; i++)
@@ -187,7 +187,7 @@ namespace Tanks
         }
 
         // is free the next cell to move
-        bool FreeCells(direction d)
+        protected bool FreeCells(direction d)
         {
             bool result = false;
             int row = topPos;
