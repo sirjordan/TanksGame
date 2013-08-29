@@ -10,26 +10,74 @@ namespace Tanks
 {
     public class EnemyTank : Tank
     {
+        // enemy tank Fileds
+        public bool isAlive;
+        Random randomMoves = new Random();
         // <Enemy constructor>
-        public EnemyTank(int row, int col)
-            : base(row, col)
+        public EnemyTank(int row, int col, string colorTank)
+            : base(row, col, colorTank)
         {
-            
+            this.isAlive = true;
         }
+               
+       
 
+        private void seekPlayersTank()
+        {
+            if (this.leftPos == GameEngine.playerTank.leftPos
+                ||
+                this.leftPos == GameEngine.playerTank.leftPos+1
+                ||
+                this.leftPos + 1 == GameEngine.playerTank.leftPos
+                )
+            {
+                if (this.topPos > GameEngine.playerTank.topPos)
+                {
+                    this.tankOrientation = direction.up;
+                }
+                else
+                {
+                    this.tankOrientation = direction.down;
+                }
+            }
+            else if (this.topPos == GameEngine.playerTank.topPos
+                || this.topPos == GameEngine.playerTank.topPos + 1
+                || this.topPos + 1 == GameEngine.playerTank.topPos)
+            {
+                if (this.leftPos > GameEngine.playerTank.leftPos)
+                {
+                    this.tankOrientation = direction.left;
+                }
+                else
+                {
+                    this.tankOrientation = direction.right;
+                }
+            }
+            else
+            {
+                this.tankOrientation = RandomDirection();
+            }
+        }
+        
         // <Methods>
         // Enemy AI movement
-        // Overrided Tank.Move() method
+        // Overrided Move() method
         public void Move()
         {
-            Random ran = new Random();
-            direction d = RandomDirection();
-            int moves = ran.Next(1, 51); 
+            
+            int moves = randomMoves.Next(1, 51);    // old 51
+
+            tankOrientation = RandomDirection();
+                        
             int speed = 100;
-            if (d == direction.right)
+            if (tankOrientation == direction.right)
             {
-                for (int i = 0; i < moves; i++)
+                
+                for (int i = 0; i < moves && isAlive; i++)
                 {
+                    if (i % 4 == 1)seekPlayersTank(); // make the tank more 'stupid' (not to chase at each iteration), also helps when the tank is in front of a wall
+                    if (tankOrientation != direction.right)
+                        return; // i.e the tank has decided to change its direction
                     if (!body.Equals(bodyRight)) // if direction is not Right
                     {
                         body = bodyRight;
@@ -37,20 +85,29 @@ namespace Tanks
                     else if (this.leftPos < Battlefield.FieldWidth - 4)
                     {
                         Delete(leftPos, topPos); // delete the last position of the tank
-                        if (FreeCells(d))
+                        if (FreeCells(tankOrientation))
                         {
                             leftPos++; // the topLeft left
                         }
                     }
                     PlaceTank(leftPos, topPos); // draw the tank
                     Thread.Sleep(speed);
+                    if (moves % 3 == 0)
+                    {
+                        EnemyMissile enemyMissile = new EnemyMissile(this, tankOrientation, leftPos, topPos);
+                        enemyMissile.Launch();
+                    }
+                    
                 }
 
             }
-            else if (d == direction.down)
+            else if (tankOrientation == direction.down)
             {
-                for (int i = 0; i < moves; i++)
+                for (int i = 0; i < moves && isAlive; i++)
                 {
+                    if (i % 4 == 1) seekPlayersTank(); // make the tank more 'stupid' (not to chase at each iteration), also helps when the tank is in front of a wall
+                    if (tankOrientation != direction.down)
+                        return; // i.e the tank has decided to change its direction
                     if (!body.Equals(bodyDown))
                     {
                         body = bodyDown;
@@ -58,20 +115,28 @@ namespace Tanks
                     else if (this.topPos < Battlefield.FieldHeight - 4)
                     {
                         Delete(leftPos, topPos);
-                        if (FreeCells(d))
+                        if (FreeCells(tankOrientation))
                         {
                             topPos++;
                         }
                     }
                     PlaceTank(leftPos, topPos);
                     Thread.Sleep(speed);
+                    if (moves % 3 == 0)
+                    {
+                        EnemyMissile enemyMissile = new EnemyMissile(this, tankOrientation, leftPos, topPos);
+                        enemyMissile.Launch();
+                    }
                 }
 
             }
-            else if (d == direction.left)
+            else if (tankOrientation == direction.left)
             {
-                for (int i = 0; i < moves; i++)
+                for (int i = 0; i < moves && isAlive; i++)
                 {
+                    if (i % 4 == 1) seekPlayersTank(); // make the tank more 'stupid' (not to chase at each iteration), also helps when the tank is in front of a wall
+                    if (tankOrientation != direction.left)
+                        return; // i.e the tank has decided to change its direction
                     if (!body.Equals(bodyLeft))
                     {
                         body = bodyLeft;
@@ -79,20 +144,28 @@ namespace Tanks
                     else if (this.leftPos > 1)
                     {
                         Delete(leftPos, topPos);
-                        if (FreeCells(d))
+                        if (FreeCells(tankOrientation))
                         {
                             leftPos--;
                         }
                     }
                     PlaceTank(leftPos, topPos);
                     Thread.Sleep(speed);
+                    if (moves % 3 == 0)
+                    {
+                        EnemyMissile enemyMissile = new EnemyMissile(this, tankOrientation, leftPos, topPos);
+                        enemyMissile.Launch();
+                    }
                 }
 
             }
             else // if direction is UP
             {
-                for (int i = 0; i < moves; i++)
+                for (int i = 0; i < moves && isAlive; i++)
                 {
+                    if (i % 2 == 1) seekPlayersTank(); // make the tank more 'stupid' (not to chase at each iteration), also helps when the tank is in front of a wall
+                    if (tankOrientation != direction.up)
+                        return; // i.e the tank has decided to change its direction
                     if (!body.Equals(bodyUp))
                     {
                         body = bodyUp;
@@ -100,16 +173,21 @@ namespace Tanks
                     else if (this.topPos > 1)
                     {
                         Delete(leftPos, topPos);
-                        if (FreeCells(d))
+                        if (FreeCells(tankOrientation))
                         {
                             topPos--;
                         }
                     }
                     PlaceTank(leftPos, topPos);
                     Thread.Sleep(speed);
+                    if (moves % 3 == 0)
+                    {
+                        EnemyMissile enemyMissile = new EnemyMissile(this, tankOrientation, leftPos, topPos);
+                        enemyMissile.Launch();
+                    }
                 }
-
             }
+
         }
 
         // EnemyTank direction
@@ -140,11 +218,10 @@ namespace Tanks
             for (int i = 0; i < number; i++)
             {
                 int col = randomCol.Next(1, Battlefield.FieldWidth - 4);
-                enemy.Add(new EnemyTank(1, col));   // the enemy tanks appeard in the top
+                enemy.Add(new EnemyTank(1, col, "red"));   // the enemy tanks appeard in the top                
             }
 
             return enemy;
         }
-
     }
 }
