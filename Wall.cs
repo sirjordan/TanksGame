@@ -13,7 +13,7 @@ namespace Tanks
         char[] content;
         int topPosition;
         int leftPosition;
-        public static char brick = (char)177;
+        public static char brick = '#';    // old: (char)177
 
         // construct the wall
         public Wall(string direction, int lenght, int top, int left)
@@ -63,6 +63,7 @@ namespace Tanks
                 {
                     Console.SetCursorPosition(currentLeft, currentTop);
                     Console.Write(content[i]);
+                    Battlefield.Add(currentTop, currentLeft, content[i]);
                     currentTop++;  
                 }
             }
