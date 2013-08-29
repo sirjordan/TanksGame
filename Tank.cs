@@ -7,16 +7,22 @@ namespace Tanks
 {
     public class Tank
     {
-        protected int life = 3;
+        // each tank to keep in mind its direction 
+        //TODO: enemy tanks can try to chase the players tank, by investigating its orientation
+        public direction tankOrientation; 
+
+        internal int life = 2;
         public enum direction { up, down, left, right };
         public int leftPos; // center of the tank
         public int topPos; // center of the tank
+        public string color;
         protected char[,] body = new char[3, 3] // regular tank dimentions, and geometry
         {
             {' ','*',' '},
             {'*','*','*'},
             {'*','*','*'}
         };
+        public int TanksKilled { get; set; }
         // I KNOW it is stupid but for now it is the simplest !
         // the idea is just to rotate the array, but it cause difficulties
         // for now it is this
@@ -47,17 +53,22 @@ namespace Tanks
         // end of stupidness
 
         // create a tank (constructor)
-        public Tank(int row, int col)
+        public Tank(int row, int col, string colorTank)
         {
             this.leftPos = col;
             this.topPos = row;
+            this.color = colorTank;
             PlaceTank(leftPos, topPos);
         }
 
         // place a tank where it is
         public void PlaceTank(int lt, int tp) // left/top
         {
-            Console.ForegroundColor = ConsoleColor.Green;
+            if (color == "red")
+                Console.ForegroundColor = ConsoleColor.Red;
+            else
+                Console.ForegroundColor = ConsoleColor.Green;
+
             Console.SetCursorPosition(lt - 1, tp - 1); // topleft for the tank
             for (int i = 0; i < 3; i++)
             {
@@ -83,6 +94,7 @@ namespace Tanks
                 if (!body.Equals(bodyRight)) // if direction is not Right
                 {
                     body = bodyRight;
+                    this.tankOrientation = direction.right;// update the tanks orientation property accordingly
                 }
                 else if (this.leftPos < Battlefield.FieldWidth - 4)
                 {
@@ -99,6 +111,7 @@ namespace Tanks
                 if (!body.Equals(bodyDown))
                 {
                     body = bodyDown;
+                    this.tankOrientation = direction.down;// update the tanks orientation property accordingly
                 }
                 else if (this.topPos < Battlefield.FieldHeight - 4)
                 {
@@ -115,6 +128,7 @@ namespace Tanks
                 if (!body.Equals(bodyLeft))
                 {
                     body = bodyLeft;
+                    this.tankOrientation = direction.left;// update the tanks orientation property accordingly
                 }
                 else if (this.leftPos > 1)
                 {
@@ -131,6 +145,7 @@ namespace Tanks
                 if (!body.Equals(bodyUp))
                 {
                     body = bodyUp;
+                    this.tankOrientation = direction.up; // update the tanks orientation property accordingly
                 }
                 else if (this.topPos > 1)
                 {
@@ -169,7 +184,7 @@ namespace Tanks
         }
 
         // delete tank from the fields
-        protected void Delete(int lt, int tp)
+        internal static  void Delete(int lt, int tp)
         {
             Console.SetCursorPosition(lt - 1, tp - 1); // topleft for the tank
             for (int i = 0; i < 3; i++)
@@ -238,6 +253,36 @@ namespace Tanks
                 {
                     return direction.up;
                 }
+            }
+        }
+
+        // match with the missle in te grid
+        public bool IsInPosition(int top, int left)
+        {
+            
+            if ((this.topPos + 1 == top && this.leftPos == left) || (this.topPos == top && this.leftPos == left) 
+                || (this.topPos - 1 == top && this.leftPos == left))    // hit from right
+            {
+                return true;
+            }
+            else if ((this.topPos + 1 == top && this.leftPos + 2 == left) || (this.topPos == top && this.leftPos + 2 == left)
+                || (this.topPos - 1 == top && this.leftPos + 2 == left))    //hit from left
+            {
+                return true;
+            }
+            else if ((this.topPos == top && this.leftPos + 1 == left) || (this.topPos == top && this.leftPos == left) ||
+                (this.topPos == top && this.leftPos - 1 == left))   //hit from top
+            {
+                return true;
+            }
+            else if ((this.topPos + 2 == top && this.leftPos + 1 == left) || (this.topPos + 2 == top && this.leftPos == left) ||
+                (this.topPos + 2 == top && this.leftPos - 1 == left))   //hit from bottom
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }
