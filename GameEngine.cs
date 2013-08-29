@@ -8,11 +8,12 @@ namespace Tanks
 {
     public class GameEngine
     {
-        static int difficult = 5;   // more is harder
+        
+        static int difficult = 1;   // more is harder
         static int gameSpeed = 60;  // small is fast
         static bool runGame = true;
-        static List<EnemyTank> enemyTanks = new List<EnemyTank>();
-        static Tank playerTank = new Tank(Battlefield.FieldHeight - 13, Battlefield.FieldWidth / 2);
+        public static List<EnemyTank> enemyTanks = new List<EnemyTank>();
+        public static Tank playerTank = new Tank(37, 20, "green");
 
         // test enemyTank
         //static EnemyTank enemyTank1 = new EnemyTank(1, Battlefield.FieldWidth - 5);
@@ -20,7 +21,7 @@ namespace Tanks
         static void Main()
         {
             // set the encoding to print the extendet ASCII table
-            //Console.OutputEncoding = System.Text.Encoding.GetEncoding(1252);
+            Console.OutputEncoding = System.Text.Encoding.GetEncoding(1252);
             
             // create a number of enemies based on the difficult
             enemyTanks = EnemyTank.GenerateEnemyTanks(difficult);
@@ -34,6 +35,8 @@ namespace Tanks
             playerTankTh.Start();
             enemyTanksTh.Join();
             playerTankTh.Join();
+
+            Battlefield.Add(40, 30, 'a');
         }
 
         // gameRun
@@ -68,9 +71,12 @@ namespace Tanks
 
                         Thread missileThread = new Thread(new ThreadStart(newMissile.Launch));
                         missileThread.Start();
-                        missileThread.Join();
+                        missileThread.Join();                        
                     }
+                    
                 }
+                if (playerTank.life <= 0)
+                    break;
             }
         }
 
@@ -80,12 +86,13 @@ namespace Tanks
         {
             while (runGame)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                List<Thread> threadList = new List<Thread>();
+                List<Thread> threadList = new List<Thread>();                
                 for (int i = 0; i < enemyTanks.Count; i++)
                 {
                     threadList.Add(new Thread(new ThreadStart(enemyTanks[i].Move)));
                     threadList[i].Start();
+                    //EnemyMissile enemyMissile = new EnemyMissile(enemyTanks[i]);
+                    //enemyMissile.Launch();
                 }
 
                 foreach (var thread in threadList)
@@ -93,6 +100,7 @@ namespace Tanks
                     thread.Join();
                 }
             }
+            
         }
     }
 }
