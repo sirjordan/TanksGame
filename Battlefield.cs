@@ -21,12 +21,42 @@ namespace Tanks
             // Create enemy tanks
         }
 
+        public static void UpdateSystemField() 
+        {
+            Console.SetCursorPosition(FieldWidth + 6, 18);
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("SCORE: " + GameEngine.playerTank.TanksKilled);
+            Console.SetCursorPosition(FieldWidth + 6, 19);
+            Console.Write("LIVES: " + GameEngine.playerTank.life);
+        }
+
+
         // set the battlefield settings
         private static  void Settings()
         {
             Console.Title = "Tanks";
-            Console.SetWindowSize(FieldWidth, FieldHeight);
-            Console.SetBufferSize(FieldWidth, FieldHeight);
+            Console.SetWindowSize(FieldWidth+20, FieldHeight);
+            
+            for (int i = 0; i < FieldHeight; i++)
+            {
+                Console.SetCursorPosition(FieldWidth, i);
+                Console.Write("||");
+            }
+
+            Console.SetCursorPosition(FieldWidth + 5, 3);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("T A N K S");
+            Console.SetCursorPosition(FieldWidth + 5, 4);
+            Console.Write("---------");
+
+            Console.SetCursorPosition(FieldWidth + 6, 18);
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("SCORE: " + GameEngine.playerTank.TanksKilled);
+
+            Console.SetCursorPosition(FieldWidth + 6, 19);
+            Console.Write("LIVES: " + GameEngine.playerTank.life);
+             
+            Console.SetBufferSize(FieldWidth + 20, FieldHeight);
             Console.CursorVisible = false;
         }
 
@@ -47,12 +77,13 @@ namespace Tanks
         static void CreateWalls()
         {
             // add some walls
-            // be careful in adding the walls
-            walls.Add(new Wall("hor", 25, 5, 5));
-            walls.Add(new Wall("vert", 5, 10, 15));
-            walls.Add(new Wall("hor", 10, 5, 40));
-            walls.Add(new Wall("vert", 20, 10, 40));
-            walls.Add(new Wall("hor", 20, 30, 40));
+            // be careful in adding the walls           
+            walls.Add(new Wall("vert", 5, 35, 25));
+            walls.Add(new Wall("vert", 5, 35, 35));
+            walls.Add(new Wall("hor", 10, 35, 25));
+            walls.Add(new Wall("hor", 20, 25, 20));
+            walls.Add(new Wall("hor", 30, 10, 15));
+            
 
             // draw them
             foreach (Wall nextWall in walls)
@@ -73,5 +104,20 @@ namespace Tanks
             }
         }
 
+        // fix the * bug
+        public static void ClearBug()
+        {
+            for (int i = 0; i < content.GetLength(0); i++)
+            {
+                for (int j = 0; j < content.GetLength(1); j++)
+                {
+                    if (content[i, j] == ' ')
+                    {
+                        Console.SetCursorPosition(j, i);
+                        Console.Write(' ');
+                    }
+                }
+            }
+        }
     }
 }
