@@ -12,6 +12,7 @@ namespace Tanks
     {
         // enemy tank Fileds
         public bool isAlive;
+        
         Random randomMoves = new Random();
         // <Enemy constructor>
         public EnemyTank(int row, int col, string colorTank)
@@ -94,7 +95,7 @@ namespace Tanks
                     Thread.Sleep(speed);
                     if (moves % 3 == 0)
                     {
-                        EnemyMissile enemyMissile = new EnemyMissile(this, tankOrientation, leftPos, topPos);
+                        EnemyMissile enemyMissile = new EnemyMissile(tankOrientation, leftPos, topPos);
                         enemyMissile.Launch();
                     }
                     
@@ -124,7 +125,7 @@ namespace Tanks
                     Thread.Sleep(speed);
                     if (moves % 3 == 0)
                     {
-                        EnemyMissile enemyMissile = new EnemyMissile(this, tankOrientation, leftPos, topPos);
+                        EnemyMissile enemyMissile = new EnemyMissile(tankOrientation, leftPos, topPos);
                         enemyMissile.Launch();
                     }
                 }
@@ -153,7 +154,7 @@ namespace Tanks
                     Thread.Sleep(speed);
                     if (moves % 3 == 0)
                     {
-                        EnemyMissile enemyMissile = new EnemyMissile(this, tankOrientation, leftPos, topPos);
+                        EnemyMissile enemyMissile = new EnemyMissile(tankOrientation, leftPos, topPos);
                         enemyMissile.Launch();
                     }
                 }
@@ -182,7 +183,7 @@ namespace Tanks
                     Thread.Sleep(speed);
                     if (moves % 3 == 0)
                     {
-                        EnemyMissile enemyMissile = new EnemyMissile(this, tankOrientation, leftPos, topPos);
+                        EnemyMissile enemyMissile = new EnemyMissile(tankOrientation, leftPos, topPos);
                         enemyMissile.Launch();
                     }
                 }
@@ -217,8 +218,9 @@ namespace Tanks
 
             for (int i = 0; i < number; i++)
             {
-                int col = randomCol.Next(1, Battlefield.FieldWidth - 4);
-                enemy.Add(new EnemyTank(1, col, "red"));   // the enemy tanks appeard in the top                
+                int col = randomCol.Next(2, Battlefield.FieldWidth - 4);
+                enemy.Add(new EnemyTank(1, col, "red"));   // the enemy tanks appeard in the top
+                                
             }
 
             return enemy;
