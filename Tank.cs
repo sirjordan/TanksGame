@@ -11,18 +11,19 @@ namespace Tanks
         //TODO: enemy tanks can try to chase the players tank, by investigating its orientation
         public direction tankOrientation; 
 
-        internal int life = 2;
+        internal int life = 5;
         public enum direction { up, down, left, right };
         public int leftPos; // center of the tank
         public int topPos; // center of the tank
         public string color;
+        public int TanksKilled { get; set; }
         protected char[,] body = new char[3, 3] // regular tank dimentions, and geometry
         {
             {' ','*',' '},
             {'*','*','*'},
             {'*','*','*'}
         };
-        public int TanksKilled { get; set; }
+
         // I KNOW it is stupid but for now it is the simplest !
         // the idea is just to rotate the array, but it cause difficulties
         // for now it is this
@@ -52,6 +53,7 @@ namespace Tanks
         };
         // end of stupidness
 
+        // <Constructor>
         // create a tank (constructor)
         public Tank(int row, int col, string colorTank)
         {
@@ -61,6 +63,7 @@ namespace Tanks
             PlaceTank(leftPos, topPos);
         }
 
+        // <Methods>
         // place a tank where it is
         public void PlaceTank(int lt, int tp) // left/top
         {
@@ -230,6 +233,36 @@ namespace Tanks
             return result;
         }
 
+        // match with the missle in te grid
+        public bool IsInPosition(int top, int left)
+        {
+
+            if ((this.topPos + 1 == top && this.leftPos == left) || (this.topPos == top && this.leftPos == left)
+                || (this.topPos - 1 == top && this.leftPos == left))    // hit from right
+            {
+                return true;
+            }
+            else if ((this.topPos + 1 == top && this.leftPos + 2 == left) || (this.topPos == top && this.leftPos + 2 == left)
+                || (this.topPos - 1 == top && this.leftPos + 2 == left))    //hit from left
+            {
+                return true;
+            }
+            else if ((this.topPos == top && this.leftPos + 1 == left) || (this.topPos == top && this.leftPos == left) ||
+                (this.topPos == top && this.leftPos - 1 == left))   //hit from top
+            {
+                return true;
+            }
+            else if ((this.topPos + 2 == top && this.leftPos + 1 == left) || (this.topPos + 2 == top && this.leftPos == left) ||
+                (this.topPos + 2 == top && this.leftPos - 1 == left))   //hit from bottom
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         // <Properties>
         // TODO: Properties for all the Fields
         // returns the tanks current direction
@@ -255,35 +288,6 @@ namespace Tanks
                 }
             }
         }
-
-        // match with the missle in te grid
-        public bool IsInPosition(int top, int left)
-        {
-            
-            if ((this.topPos + 1 == top && this.leftPos == left) || (this.topPos == top && this.leftPos == left) 
-                || (this.topPos - 1 == top && this.leftPos == left))    // hit from right
-            {
-                return true;
-            }
-            else if ((this.topPos + 1 == top && this.leftPos + 2 == left) || (this.topPos == top && this.leftPos + 2 == left)
-                || (this.topPos - 1 == top && this.leftPos + 2 == left))    //hit from left
-            {
-                return true;
-            }
-            else if ((this.topPos == top && this.leftPos + 1 == left) || (this.topPos == top && this.leftPos == left) ||
-                (this.topPos == top && this.leftPos - 1 == left))   //hit from top
-            {
-                return true;
-            }
-            else if ((this.topPos + 2 == top && this.leftPos + 1 == left) || (this.topPos + 2 == top && this.leftPos == left) ||
-                (this.topPos + 2 == top && this.leftPos - 1 == left))   //hit from bottom
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        
     }
 }
