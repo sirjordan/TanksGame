@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
+
 
 namespace Tanks
 {
@@ -18,6 +19,7 @@ namespace Tanks
             SetDefaultChars();
             Settings();
             CreateWalls();
+            TheHost();
             // Create enemy tanks
         }
 
@@ -55,6 +57,9 @@ namespace Tanks
 
             Console.SetCursorPosition(FieldWidth + 6, 19);
             Console.Write("LIVES: " + GameEngine.playerTank.life);
+
+            Console.SetCursorPosition(FieldWidth + 3, 20);
+            Console.Write("Enemy Tanks: " + (GameEngine.enemyTankCount));
              
             Console.SetBufferSize(FieldWidth + 20, FieldHeight);
             Console.CursorVisible = false;
@@ -73,18 +78,41 @@ namespace Tanks
             }
         }
 
-        // create a walls for the battlefield, the idea is that it could be composed
+        // Create a walls for the battlefield, the idea is that it could be composed
         static void CreateWalls()
         {
-            // add some walls
-            // be careful in adding the walls           
+            // Add some walls
+            // Be careful in adding the walls !
+
+            // arguments: (stirng direction, int lenght, int top, int left)
+            walls.Add(new Wall("vert", 6, 34, 24));
             walls.Add(new Wall("vert", 5, 35, 25));
             walls.Add(new Wall("vert", 5, 35, 35));
+            walls.Add(new Wall("vert", 6, 34, 36));
             walls.Add(new Wall("hor", 10, 35, 25));
-            walls.Add(new Wall("hor", 20, 25, 20));
-            walls.Add(new Wall("hor", 30, 10, 15));
-            
+            walls.Add(new Wall("hor", 11, 34, 25));
 
+            walls.Add(new Wall("vert", 8, 1, 1));
+            walls.Add(new Wall("vert", 8, 1, 2));
+            walls.Add(new Wall("vert", 8, 1, Battlefield.FieldWidth - 2));
+            walls.Add(new Wall("vert", 8, 1, Battlefield.FieldWidth - 3));
+            walls.Add(new Wall("vert", 10, 6, Battlefield.FieldWidth / 2));
+            walls.Add(new Wall("vert", 10, 6, Battlefield.FieldWidth / 2 - 1));
+            walls.Add(new Wall("hor", 20, 25, 20));
+            walls.Add(new Wall("hor", 20, 19, 1));
+            walls.Add(new Wall("hor", 20, 18, 1));
+            walls.Add(new Wall("hor", 20, 19, Battlefield.FieldWidth - 20));
+            walls.Add(new Wall("hor", 20, 18, Battlefield.FieldWidth - 20));
+            walls.Add(new Wall("vert", 6, 26, 5));
+            walls.Add(new Wall("vert", 6, 26, 6));
+            walls.Add(new Wall("hor", Battlefield.FieldWidth - 10, 24, 5));
+            walls.Add(new Wall("hor", Battlefield.FieldWidth - 10, 25, 5));
+            walls.Add(new Wall("vert", 6, 26, Battlefield.FieldWidth - 6));
+            walls.Add(new Wall("vert", 6, 26, Battlefield.FieldWidth - 7));
+            walls.Add(new Wall("hor", 20, 26, 20));
+            walls.Add(new Wall("hor", 30, 10, 15));
+            walls.Add(new Wall("hor", 40, 11, 10));
+            
             // draw them
             foreach (Wall nextWall in walls)
             {
@@ -92,6 +120,17 @@ namespace Tanks
             }
         }
 
+        static void TheHost()
+        {    
+            walls.Add(new Wall("hor", 9, 36, 26, '-'));
+            walls.Add(new Wall("hor", 9, 37, 26, '-'));
+            walls.Add(new Wall("hor", 9, 38, 26, '-'));
+            walls.Add(new Wall("hor", 9, 39, 26, '-'));
+            foreach (Wall nextWall in walls)
+            {                
+                nextWall.Draw();
+            }
+        }
         // set everyting to ' '
         private static void SetDefaultChars()
         {
