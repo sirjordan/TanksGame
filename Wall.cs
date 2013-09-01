@@ -13,16 +13,17 @@ namespace Tanks
         char[] content;
         int topPosition;
         int leftPosition;
-        public static char brick = '#';    // old: (char)177
+        char brick;    // old: (char)177
 
         // construct the wall
-        public Wall(string direction, int lenght, int top, int left)
+        public Wall(string direction, int lenght, int top, int left, char bricks = '#')
         {
             this.content = new char[lenght];
             this.bricksCount = lenght;
             this.direction = direction;
             this.topPosition = top;
             this.leftPosition = left;
+            this.brick = bricks;
             ConstructWall();
         }
 
