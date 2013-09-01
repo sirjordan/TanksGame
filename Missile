@@ -31,7 +31,7 @@ namespace Tanks
         {
             if (missleDirection.Equals(Tank.direction.down))
             {
-                if (this.currentTank.topPos < Battlefield.FieldHeight - 1)
+                if (this.currentTank.topPos < Battlefield.FieldHeight - 3)
                 {
                     missileLeft += 1;
                     missileTop += 3;
@@ -44,6 +44,11 @@ namespace Tanks
                         else if (Battlefield.content[missileTop, missileLeft] == '*')  // if hit a Tank
                         {
                             CheckTanksForHit();
+                            break;
+                        }
+                        else if (Battlefield.content[missileTop, missileLeft] == '-')  // if hit the host
+                        {
+                            GameEngine.GameOver();
                             break;
                         }
                         else
@@ -70,6 +75,11 @@ namespace Tanks
                             CheckTanksForHit();
                             break;
                         }
+                        else if (Battlefield.content[missileTop, missileLeft] == '-')  // if hit the host
+                        {
+                            GameEngine.GameOver();
+                            break;
+                        }
                         else  // if hit a wall
                         {
                             break;
@@ -94,6 +104,11 @@ namespace Tanks
                             CheckTanksForHit();
                             break;
                         }
+                        else if (Battlefield.content[missileTop, missileLeft] == '-')  // if hit the host
+                        {
+                            GameEngine.GameOver();
+                            break;
+                        }
                         else
                         {
                             break;
@@ -106,7 +121,7 @@ namespace Tanks
                 if (this.currentTank.topPos > 1)
                 {
                     missileLeft += 1;
-                    missileTop -= 3;
+                    missileTop -= 1;
                     while (missileTop > 1)
                     {
                         if (Battlefield.content[missileTop, missileLeft] == ' ')
@@ -118,8 +133,15 @@ namespace Tanks
                             CheckTanksForHit();
                             break;
                         }
-                        else
+                        else if (Battlefield.content[missileTop, missileLeft] == '-')  // if hit the host
                         {
+                            GameEngine.GameOver();
+                            break;
+                        }
+                        else    // if hit a wall
+                        {
+                            GameEngine.playerTank.TanksKilled += 5;
+                            Battlefield.UpdateSystemField();
                             break;
                         }
                     }
@@ -173,9 +195,39 @@ namespace Tanks
                     Tank.Delete(GameEngine.enemyTanks[i].leftPos, GameEngine.enemyTanks[i].topPos);
                     GameEngine.enemyTanks.Remove(GameEngine.enemyTanks[i]);
                     Console.Write("Boom");
-                    GameEngine.playerTank.TanksKilled+=100;
+                    GameEngine.playerTank.TanksKilled += 500;
                     Battlefield.UpdateSystemField();
+                    GameEngine.enemyTankCount--;
+                    if (GameEngine.enemyTankCount > 1)
+                    {                        
+                        int col = 5;
+                        if (GameEngine.enemyTankCount % 2 == 0)
+                            col = 45;
+                        GameEngine.enemyTanks.Add(new EnemyTank(1, col, "red"));
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.SetCursorPosition(Battlefield.FieldWidth + 3, 20);
+                        Console.Write("Enemy Tanks: " + (GameEngine.enemyTankCount));
+                    }
+                    else if (GameEngine.enemyTankCount == 1)
+                    {
+                         Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.SetCursorPosition(Battlefield.FieldWidth + 3, 20);
+                        Console.Write("Enemy Tanks: " + (GameEngine.enemyTankCount));
+                    }
+                    else if (GameEngine.enemyTankCount == 0)
+                    {
+                        //Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        //Console.SetCursorPosition(Battlefield.FieldWidth / 2 - 20, Battlefield.FieldHeight / 2);
+                        //Console.WriteLine("YOU WIN !");
+                        //Console.SetCursorPosition(Battlefield.FieldWidth / 2 - 20, Battlefield.FieldHeight / 2 + 2);
+                        //Console.WriteLine("SCORE: " + GameEngine.playerTank.TanksKilled);
+                        //GameEngine.runGame = false;
+                        Console.SetCursorPosition(Battlefield.FieldWidth / 2, Battlefield.FieldHeight / 2 - 11);
+                        Console.WriteLine("YOU WIN !");
+                        GameEngine.GameOver();
+                    }
                     break;
+                    
                 }
             }
         }
